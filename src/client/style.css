@@ -1,0 +1,398 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+m3e-theme {
+  transition: background-color 0.5s ease;
+}
+
+main {
+  flex: 1;
+  padding: 1.5rem;
+  padding-bottom: 5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+m3e-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+/* ── Search Page ── */
+
+.search-page {
+  padding: 1rem;
+}
+
+m3e-search-view {
+  margin: 0.5rem 1rem;
+}
+
+/* ── Loading / Error states ── */
+
+.loading-page {
+  padding: 1.5rem;
+}
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+/* ── Anime Detail ── */
+
+.anime-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  min-height: 340px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 50px;
+  margin: 0 1rem;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.85) 20%, rgb(0 0 0 / 0.4) 60%, rgb(0 0 0 / 0.6));
+  backdrop-filter: blur(4px);
+  border-radius: 50px;
+  
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  max-width: 900px;
+  margin: 10rem 0;
+  align-items: flex-end;
+  border-radius: 12px;
+}
+
+.hero-cover {
+  width: 140px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.5);
+  flex-shrink: 0;
+  margin: 0 1rem; 
+}
+
+.hero-text {
+  color: #fff;
+  flex: 1;
+}
+
+.hero-text h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-text h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
+.hero-text h3 {
+  font-size: 0.85rem;
+  font-weight: 300;
+  opacity: 0.65;
+  margin-top: 0.15rem;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgb(255 255 255 / 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.score-badge {
+  background: rgb(76 175 80 / 0.7);
+}
+
+.rank-badge {
+  background: rgb(255 193 7 / 0.7);
+  color: #000;
+}
+
+.status-badge {
+  background: rgb(33 150 243 / 0.7);
+}
+
+/* ── Anime Body ── */
+
+.anime-body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  padding-bottom: 5rem;
+  animation: fadeSlideIn 0.4s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.info-item m3e-icon {
+  font-size: 1.1rem;
+}
+
+/* ── Sections ── */
+
+.anime-section {
+  margin-bottom: 2rem;
+}
+
+.anime-section m3e-heading {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.description-text {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+/* ── Tags & Genres ── */
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+m3e-card + m3e-card {
+  margin-top: 1rem;
+}
+
+/* ── Person Grid (Staff & Characters) ── */
+
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.person-card {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: var(--md-sys-color-surface-container-high, #ece6f0);
+  align-items: flex-start;
+}
+
+.person-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.person-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.person-info strong {
+  font-size: 0.85rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-info span {
+  font-size: 0.75rem;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+/* Character cards with VA */
+
+.character-card {
+  flex-direction: column;
+}
+
+.char-main {
+  display: flex;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.va-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--md-sys-color-outline-variant, #cac4d0);
+  width: 100%;
+}
+
+.va-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.va-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.va-item img {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.va-item span {
+  font-size: 0.75rem;
+}
+
+/* ── Card Grid (Relations, Streaming) ── */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.relation-card,
+.stream-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--md-sys-color-surface-container-high, #ece6f0);
+  transition: transform 0.15s;
+}
+
+.relation-card:hover,
+.stream-card:hover {
+  transform: translateY(-2px);
+}
+
+.relation-card img,
+.stream-card img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+
+.relation-info,
+.stream-info {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.relation-info strong,
+.stream-info strong {
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relation-info span,
+.stream-info span {
+  font-size: 0.7rem;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.relation-type {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--md-sys-color-primary, #6750a4);
+}
+
+/* ── External Links ── */
+
+.links-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* ── Footer ── */
+
+.anime-footer {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.anime-footer a {
+  color: var(--md-sys-color-primary, #6750a4);
+  font-size: 0.85rem;
+}
