@@ -5,10 +5,13 @@ import "@m3e/web/icon";
 import "@m3e/web/icon-button";
 import "@m3e/web/chips";
 import "@m3e/web/button-group";
+import "@m3e/web/avatar";
+import type { AuthUser } from "./auth";
 
 export interface LayoutConfig {
   title: string;
   subtitle?: string;
+  user?: AuthUser | null;
 }
 
 export function renderLayout(config: LayoutConfig): void {
@@ -56,22 +59,30 @@ export function renderLayout(config: LayoutConfig): void {
   settingsBtn.appendChild(settingsIcon);
   appBar.appendChild(settingsBtn);
   settingsBtn.addEventListener("click", () => {
-    window.location.href = "/settings";
-  });
-
-
-  const avatarBtn = document.createElement("m3e-icon-button");
-  avatarBtn.setAttribute("slot", "trailing");
-  avatarBtn.setAttribute("aria-label", "Profile");
-  avatarBtn.setAttribute("variant", "tonal");
-  avatarBtn.addEventListener("click", () => {
     window.location.href = "/profile";
   });
-  avatarBtn.setAttribute("width", "wide");
-  const avatarIcon = document.createElement("m3e-icon");
-  avatarIcon.setAttribute("name", "account_circle");
-  avatarBtn.appendChild(avatarIcon);
-  appBar.appendChild(avatarBtn);
+
+  const profileBtn = document.createElement("m3e-icon-button");
+  profileBtn.setAttribute("slot", "trailing");
+  profileBtn.setAttribute("aria-label", "Profile");
+  profileBtn.setAttribute("variant", "tonal");
+  profileBtn.setAttribute("width", "wide");
+  profileBtn.addEventListener("click", () => {
+    window.location.href = config.user ? `/profile` : "/profile";
+  });
+
+  if (config.user?.avatar?.medium) {
+    const avatar = document.createElement("m3e-avatar");
+    avatar.setAttribute("slot", "icon");
+    avatar.setAttribute("src", config.user.avatar.medium);
+    avatar.setAttribute("alt", config.user.name);
+    profileBtn.appendChild(avatar);
+  } else {
+    const avatarIcon = document.createElement("m3e-icon");
+    avatarIcon.setAttribute("name", "account_circle");
+    profileBtn.appendChild(avatarIcon);
+  }
+  appBar.appendChild(profileBtn);
 
   const navBar = document.createElement("m3e-nav-bar");
   navBar.setAttribute("mode", "extended");
@@ -87,7 +98,7 @@ export function renderLayout(config: LayoutConfig): void {
 
   for (const item of navItems) {
     const navItem = document.createElement("m3e-nav-item");
-    if (currentPath === item.path) {
+    if (currentPath === item.path || (item.path !== "/" && currentPath.startsWith(item.path))) {
       navItem.setAttribute("selected", "");
     }
     const icon = document.createElement("m3e-icon");

@@ -1,9 +1,12 @@
 import { renderLayout } from "./layout";
+import { fetchAuth } from "./auth";
 import "@m3e/web/search";
 import "@m3e/web/list";
 
-
-renderLayout({ title: "ManuList", subtitle: "Manage your world" });
+(async () => {
+  const auth = await fetchAuth();
+  renderLayout({ title: "ManuList", subtitle: "Manage your world", user: auth.user });
+})();
 
 interface AnimeResult {
   id: number;
