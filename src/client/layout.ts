@@ -59,7 +59,7 @@ export function renderLayout(config: LayoutConfig): void {
   settingsBtn.appendChild(settingsIcon);
   appBar.appendChild(settingsBtn);
   settingsBtn.addEventListener("click", () => {
-    window.location.href = "/profile";
+    window.location.href = "/settings";
   });
 
   const profileBtn = document.createElement("m3e-icon-button");
@@ -70,18 +70,9 @@ export function renderLayout(config: LayoutConfig): void {
   profileBtn.addEventListener("click", () => {
     window.location.href = config.user ? `/profile` : "/profile";
   });
-
-  if (config.user?.avatar?.medium) {
-    const avatar = document.createElement("m3e-avatar");
-    avatar.setAttribute("slot", "icon");
-    avatar.setAttribute("src", config.user.avatar.medium);
-    avatar.setAttribute("alt", config.user.name);
-    profileBtn.appendChild(avatar);
-  } else {
-    const avatarIcon = document.createElement("m3e-icon");
-    avatarIcon.setAttribute("name", "account_circle");
-    profileBtn.appendChild(avatarIcon);
-  }
+  const avatarIcon = document.createElement("m3e-icon");
+  avatarIcon.setAttribute("name", "account_circle");
+  profileBtn.appendChild(avatarIcon);
   appBar.appendChild(profileBtn);
 
   const navBar = document.createElement("m3e-nav-bar");

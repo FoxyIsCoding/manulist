@@ -9,6 +9,7 @@ import library from "./src/pages/library.html";
 import {
   SEARCH_QUERY,
   DETAIL_QUERY,
+  OG_QUERY,
   USER_QUERY,
   ACTIVITY_QUERY,
   EXPLORE_QUERY,
@@ -22,6 +23,20 @@ import {
 } from "./src/server/anilist";
 import { loginRedirect, authCallback, logout, getViewer } from "./src/server/auth";
 import { getToken } from "./src/server/session";
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function stripAnimeDescription(desc: string): string {
+  return desc
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/__/g, "")
+    .replace(/~.*?~/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 const SORT_MAP: Record<string, string[]> = {
   trending: ["TRENDING_DESC"],

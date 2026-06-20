@@ -1,0 +1,16 @@
+# ANIME DETAILS:
+ - Edit anime = delete from list.
+ - When sharing on twitter, use the anime title and image as preview, and link to the anime page on manulist.
+ - Skeleton loading 
+ - Fix tags to be chips instead of plain text.
+
+# PROFILE:
+ - Allow me to click on favourites to view the anime/characters/staff/studios in that list.
+ - Library of users
+  - Skeleton loading
+
+# OTHER:
+  - Add a loading state when fetching data for anime details and profile pages.
+  - Add a "Share" button on anime details that copies the URL to clipboard and shows a tooltip confirming the action.
+  - Settings page
+  

@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  --m3e-segmented-list-item-container-color: var(--md-sys-color-surface-container-high, #ece6f0);
 }
 
 body {
@@ -9,6 +10,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  --sb-track-color: #232E33;
+  --sb-thumb-color: #6BAF8D;
+  --sb-size: 14px;
 }
 
 m3e-theme {
@@ -75,9 +79,14 @@ m3e-search-view {
   position: absolute;
   inset: 0;
   background: linear-gradient(to top, rgb(0 0 0 / 0.85) 20%, rgb(0 0 0 / 0.4) 60%, rgb(0 0 0 / 0.6));
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
   border-radius: 50px;
-  
+  transition: backdrop-filter 1.6s;
+}
+
+.hero-overlay:hover {
+  backdrop-filter: blur(0px);
+  transition: backdrop-filter 1.2s;
 }
 
 .hero-content {
@@ -102,6 +111,13 @@ m3e-search-view {
   flex-shrink: 0;
   margin: 0 1rem; 
 }
+
+.hero-cover:hover {
+  transform: translateY(-4px);
+  transform: scale(1.02);
+  transition: transform 0.2s;
+}
+
 
 .hero-text {
   color: #fff;
@@ -222,6 +238,7 @@ m3e-search-view {
 
 .card-content {
   padding: 1rem;
+
 }
 
 m3e-card + m3e-card {
@@ -249,7 +266,6 @@ m3e-card + m3e-card {
   width: 48px;
   height: 48px;
   object-fit: cover;
-  border-radius: 50%;
   flex-shrink: 0;
 }
 
@@ -555,16 +571,29 @@ m3e-card + m3e-card {
 
 .profile-banner {
   position: relative;
-  min-height: 180px;
-  background: var(--md-sys-color-primary-container, #eaddff);
   background-size: cover;
   background-position: center;
+  min-height: 340px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 50px;
+  margin: 0 1rem;
+
 }
 
 .profile-banner-overlay {
   position: absolute;
   inset: 0;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
   background: linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.3));
+  transition: backdrop-filter 0.6s;
+}
+
+.profile-banner-overlay:hover {
+  backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.6s;
+  
 }
 
 .profile-header {
@@ -575,7 +604,7 @@ m3e-card + m3e-card {
   gap: 1rem;
   padding: 2rem 1.5rem 1.5rem;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 0;
   flex-wrap: wrap;
 }
 
@@ -598,37 +627,31 @@ m3e-card + m3e-card {
   padding: 2rem;
 }
 
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.75rem;
-  margin: 1.5rem 0;
+
+.profile-avatar {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
 }
 
-.stat-card .stat-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+.profile-avatar:hover {
+  transform: translateY(-4px);
+  transform: scale(1.02);
+  transition: transform 0.2s;
 }
 
-.stat-content m3e-icon {
-  font-size: 1.5rem;
-  color: var(--md-sys-color-primary, #6750a4);
-}
 
-.stat-content strong {
-  display: block;
-  font-size: 1.2rem;
-}
-
-.stat-content span {
-  font-size: 0.75rem;
-  color: var(--md-sys-color-on-surface-variant, #49454f);
-}
 
 .profile-section {
   margin: 1.5rem 0;
+}
+
+/* ── Stats Grid ── */
+
+m3e-list.stats-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 
 .about-textarea {
@@ -640,11 +663,13 @@ m3e-card + m3e-card {
   font-family: inherit;
   font-size: 0.9rem;
   resize: vertical;
+  color: var(--m3e-card-text-color);
   margin: 0.5rem 0;
 }
 
 .about-card {
   margin-bottom: 1rem;
+
 }
 
 /* ── List Controls (Anime Detail) ── */
@@ -704,3 +729,106 @@ m3e-card + m3e-card {
   flex-wrap: wrap;
 }
 
+/* ── FAB (Anime Detail) ── */
+
+#anime-fab {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  z-index: 50;
+}
+
+/* ── Edit Bottom Sheet ── */
+
+.edit-sheet-content {
+  padding: 0.5rem 1rem 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.edit-sheet-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.edit-field {
+  margin-bottom: 1rem;
+}
+
+.edit-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  margin-bottom: 0.5rem;
+}
+
+.edit-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.edit-progress-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: center;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.scrollable-btn-group {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+
+.scrollable-btn-group m3e-button-group {
+  flex-wrap: nowrap;
+  display: inline-flex;
+}
+
+#edit-status-group,
+#edit-score-group {
+  flex-wrap: nowrap;
+}
+
+
+/* Scroll Bar */
+
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--md-sys-color-primary) transparent;
+}
+
+
+::-webkit-scrollbar {
+  width: 20px;      
+  height: 20px;   
+}
+
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;      
+  border-radius: 0px !important;      
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-primary);          
+  border-radius: 0px !important;        
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;          
+}

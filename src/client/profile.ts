@@ -16,6 +16,9 @@ import "@m3e/web/button-group";
 import "@m3e/web/skeleton";
 import "@m3e/web/icon";
 import "@m3e/web/avatar";
+import "@m3e/web/list";
+import "@m3e/web/divider";
+import "@m3e/web/shape";
 
 interface UserProfile {
   id: number;
@@ -41,20 +44,6 @@ const pageContent = document.getElementById("page-content")!;
 const params = new URLSearchParams(window.location.search);
 const profileName = params.get("name");
 const error = params.get("error");
-
-function statCard(label: string, value: string | number, icon: string): string {
-  return `
-    <m3e-card class="stat-card">
-      <div class="stat-content">
-        <m3e-icon name="${icon}"></m3e-icon>
-        <div>
-          <strong>${htmlEncode(String(value))}</strong>
-          <span>${htmlEncode(label)}</span>
-        </div>
-      </div>
-    </m3e-card>
-  `;
-}
 
 function renderLoginPrompt(configured: boolean): void {
   pageContent.innerHTML = `
@@ -98,48 +87,52 @@ function renderProfile(user: UserProfile, isOwn: boolean): void {
       <div class="profile-banner" style="${banner ? `background-image:url('${escapeAttr(banner)}')` : ""}">
         <div class="profile-banner-overlay"></div>
         <div class="profile-header">
-          <m3e-avatar src="${escapeAttr(avatar)}" alt="${htmlEncode(user.name)}" size="large"></m3e-avatar>
+          <m3e-shape class="profile-avatar" name="7-sided-cookie"><img  src="${escapeAttr(avatar)}" alt="${htmlEncode(user.name)}" size="large"></img></m3e-shape>
           <div class="profile-title">
             <m3e-heading level="1">${htmlEncode(user.name)}</m3e-heading>
             ${user.siteUrl ? `<a href="${escapeAttr(user.siteUrl)}" target="_blank" rel="noopener">View on AniList</a>` : ""}
           </div>
-          ${isOwn ? `<m3e-button variant="outlined" id="logout-btn"><m3e-icon slot="icon" name="logout"></m3e-icon>Logout</m3e-button>` : ""}
         </div>
       </div>
+      
 
       <div class="page-container">
-        ${
-          isOwn
-            ? `
-        <m3e-card class="about-card">
-          <div class="card-content">
-            <m3e-heading level="3">About</m3e-heading>
-            <textarea id="about-input" class="about-textarea" rows="4" placeholder="Tell us about yourself...">${htmlEncode(user.about ?? "")}</textarea>
-            <m3e-button variant="tonal" id="save-about-btn">Save About</m3e-button>
-          </div>
-        </m3e-card>`
-            : user.about
-              ? `<m3e-card><div class="card-content"><m3e-heading level="3">About</m3e-heading><p>${htmlEncode(user.about)}</p></div></m3e-card>`
-              : ""
-        }
 
-        <div class="stat-grid">
-          ${statCard("Anime", stats?.count ?? 0, "movie")}
-          ${statCard("Episodes", stats?.episodes ?? 0, "smart_display")}
-          ${statCard("Days Watched", stats?.minutes ? Math.round(stats.minutes / 60 / 24 * 10) / 10 : 0, "schedule")}
-          ${statCard("Mean Score", stats?.meanScore ? `${stats.meanScore}%` : "—", "star")}
-        </div>
+        <m3e-heading level="2" style="margin-bottom: 1rem;">About</m3e-heading>
+
+        <m3e-action-list variant="segmented">
+          <m3e-list-action>
+            <m3e-icon slot="leading" name="movie"></m3e-icon>
+            ${stats?.count ?? 0}
+            <span slot="supporting-text">Anime</span>
+          </m3e-list-action>
+          <m3e-list-action>
+            <m3e-icon slot="leading" name="smart_display"></m3e-icon>
+            ${stats?.episodes ?? 0}
+            <span slot="supporting-text">Episodes</span>
+          </m3e-list-action>
+          <m3e-list-action>
+            <m3e-icon slot="leading" name="schedule"></m3e-icon>
+            ${stats?.minutes ? Math.round(stats.minutes / 60 / 24 * 10) / 10 : 0}
+            <span slot="supporting-text">Days Watched</span>
+          </m3e-list-action>
+          <m3e-list-action>
+            <m3e-icon slot="leading" name="star"></m3e-icon>
+            ${stats?.meanScore ? `${stats.meanScore}%` : "—"}
+            <span slot="supporting-text">Mean Score</span>
+          </m3e-list-action>
+        </m3e-action-list>
 
         ${
           favs
             ? `
         <section class="profile-section">
-          <m3e-heading level="3">Favourites</m3e-heading>
+          <m3e-heading level="3" style="margin-bottom: 1rem;">Favourites</m3e-heading>
           <div class="tags-row">
-            ${favs.anime ? `<m3e-chip>Anime: ${favs.anime}</m3e-chip>` : ""}
-            ${favs.characters ? `<m3e-chip>Characters: ${favs.characters}</m3e-chip>` : ""}
-            ${favs.staff ? `<m3e-chip>Staff: ${favs.staff}</m3e-chip>` : ""}
-            ${favs.studios ? `<m3e-chip>Studios: ${favs.studios}</m3e-chip>` : ""}
+            ${favs.anime ? `<m3e-chip>Anime: ${favs.anime}</m3e-chip>` : "<m3e-chip>Anime: 0</m3e-chip>"}
+            ${favs.characters ? `<m3e-chip>Characters: ${favs.characters}</m3e-chip>` : "<m3e-chip>Characters: 0</m3e-chip>"}
+            ${favs.staff ? `<m3e-chip>Staff: ${favs.staff}</m3e-chip>` : "<m3e-chip>Staff: 0</m3e-chip>"}
+            ${favs.studios ? `<m3e-chip>Studios: ${favs.studios}</m3e-chip>` : "<m3e-chip>Studios: 0</m3e-chip>"}
           </div>
         </section>`
             : ""
@@ -149,18 +142,14 @@ function renderProfile(user: UserProfile, isOwn: boolean): void {
           statusBreakdown
             ? `
         <section class="profile-section">
-          <m3e-heading level="3">List Breakdown</m3e-heading>
+          <m3e-heading level="3" style="margin-bottom: 1rem;">List Breakdown</m3e-heading>
           <div class="tags-row">${statusBreakdown}</div>
-          <m3e-button variant="tonal" onclick="window.location.href='/library'">
-            <m3e-icon slot="icon" name="newsstand"></m3e-icon>
-            View Library
-          </m3e-button>
         </section>`
             : ""
         }
 
         <section class="profile-section">
-          <m3e-heading level="3">Quick Links</m3e-heading>
+          <m3e-heading level="3" style="margin-bottom: 1rem;">Quick Links</m3e-heading>
           <m3e-button-group variant="connected">
             <m3e-button variant="tonal" onclick="window.location.href='/activity?userId=${user.id}'">
               <m3e-icon slot="icon" name="update"></m3e-icon>

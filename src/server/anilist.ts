@@ -324,6 +324,18 @@ mutation ($about: String) {
 }
 `;
 
+/** Lightweight query for Open Graph / Twitter Card meta tags on anime detail pages. */
+export const OG_QUERY = `
+query ($id: Int) {
+  Media(id: $id, type: ANIME) {
+    id
+    title { romaji english native }
+    coverImage { extraLarge large }
+    description
+  }
+}
+`;
+
 export function currentSeason(): { season: string; year: number } {
   const now = new Date();
   const month = now.getMonth() + 1;

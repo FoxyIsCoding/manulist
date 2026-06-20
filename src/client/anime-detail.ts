@@ -2,9 +2,7 @@ import { renderLayout } from "./layout";
 import {
   fetchAuth,
   saveListEntry,
-  deleteListEntry,
   toggleFavourite,
-  loginUrl,
   LIST_STATUSES,
   statusLabel,
   htmlEncode,
@@ -22,6 +20,10 @@ import "@m3e/web/icon";
 import "@m3e/web/icon-button";
 import "@m3e/web/progress-indicator";
 import "@m3e/web/snackbar";
+import "@m3e/web/expansion-panel";
+import "@m3e/web/fab";
+import "@m3e/web/fab-menu";
+import "@m3e/web/bottom-sheet";
 
 interface Title {
   romaji?: string;
@@ -176,215 +178,6 @@ function formatLabel(format?: string): string {
   return map[format] || format;
 }
 
-function renderListControls(anime: AnimeDetail): string {
-  if (!authUser) {
-    return `
-      <section class="anime-section list-section">
-        <m3e-heading level="3">Your List</m3e-heading>
-        <m3e-card>
-          <div class="card-content list-login-prompt">
-            <p>Sign in to track this anime on your AniList.</p>
-            <m3e-button variant="filled" id="anime-login-btn">
-              <m3e-icon slot="icon" name="login"></m3e-icon>
-              Login with AniList
-            </m3e-button>
-          </div>
-        </m3e-card>
-      </section>
-    `;
-  }
-
-  const entry = currentEntry;
-  const progress = entry?.progress ?? 0;
-  const maxEps = anime.episodes ?? 0;
-  const progressPct = maxEps ? Math.min(100, (progress / maxEps) * 100) : 0;
-
-  return `
-    <section class="anime-section list-section">
-      <div class="list-section-header">
-        <m3e-heading level="3">Your List</m3e-heading>
-        <m3e-icon-button variant="tonal" id="fav-btn" aria-label="Toggle favourite">
-          <m3e-icon name="${isFavourite ? "favorite" : "favorite_border"}"></m3e-icon>
-        </m3e-icon-button>
-      </div>
-
-      <m3e-card>
-        <div class="card-content">
-          <p class="list-label">Status</p>
-          <m3e-button-group variant="connected" id="status-group">
-            ${LIST_STATUSES.map(
-              (s) => `
-              <m3e-button variant="tonal" toggle data-status="${s.value}" ${entry?.status === s.value ? "selected" : ""}>
-                <m3e-icon slot="icon" name="${s.icon}"></m3e-icon>
-                ${htmlEncode(s.label)}
-              </m3e-button>
-            `,
-            ).join("")}
-          </m3e-button-group>
-
-          <div class="progress-row">
-            <p class="list-label">Progress</p>
-            <div class="progress-controls">
-              <m3e-icon-button variant="tonal" id="progress-dec" aria-label="Decrease progress">
-                <m3e-icon name="remove"></m3e-icon>
-              </m3e-icon-button>
-              <span class="progress-text" id="progress-display">${progress}${maxEps ? ` / ${maxEps}` : ""} episodes</span>
-              <m3e-icon-button variant="tonal" id="progress-inc" aria-label="Increase progress">
-                <m3e-icon name="add"></m3e-icon>
-              </m3e-icon-button>
-            </div>
-            ${maxEps ? `<m3e-progress-indicator value="${progressPct}" max="100" style="width:100%;margin-top:8px"></m3e-progress-indicator>` : ""}
-          </div>
-
-          <div class="score-row">
-            <p class="list-label">Score</p>
-            <m3e-button-group variant="connected" id="score-group">
-              ${[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(
-                (s) => `
-                <m3e-button variant="tonal" toggle data-score="${s}" ${entry?.score === s ? "selected" : ""}>${s}</m3e-button>
-              `,
-              ).join("")}
-            </m3e-button-group>
-          </div>
-
-          <div class="notes-row">
-            <p class="list-label">Notes</p>
-            <textarea id="list-notes" class="about-textarea" rows="3" placeholder="Private notes...">${htmlEncode(entry?.notes ?? "")}</textarea>
-            <m3e-button variant="tonal" id="save-notes-btn">Save Notes</m3e-button>
-          </div>
-
-          ${
-            entry
-              ? `<m3e-button variant="outlined" id="remove-list-btn" style="margin-top:12px">
-                  <m3e-icon slot="icon" name="delete"></m3e-icon>
-                  Remove from List
-                </m3e-button>`
-              : ""
-          }
-        </div>
-      </m3e-card>
-    </section>
-  `;
-}
-
-function wireListControls(anime: AnimeDetail): void {
-  document.getElementById("anime-login-btn")?.addEventListener("click", () => {
-    window.location.href = loginUrl();
-  });
-
-  document.getElementById("fav-btn")?.addEventListener("click", async () => {
-    try {
-      isFavourite = await toggleFavourite(anime.id);
-      const icon = document.querySelector("#fav-btn m3e-icon");
-      icon?.setAttribute("name", isFavourite ? "favorite" : "favorite_border");
-      showSnackbar(isFavourite ? "Added to favourites" : "Removed from favourites");
-    } catch {
-      showSnackbar("Failed to update favourite");
-    }
-  });
-
-  document.querySelectorAll("#status-group [data-status]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const status = btn.getAttribute("data-status")!;
-      try {
-        const entry = (await saveListEntry({
-          id: currentEntry?.id,
-          mediaId: anime.id,
-          status,
-        })) as AnimeDetail["mediaListEntry"];
-        currentEntry = entry ?? { id: currentEntry?.id ?? 0, status, progress: currentEntry?.progress };
-        if (entry?.id) currentEntry = entry;
-        showSnackbar(`Status: ${statusLabel(status)}`);
-        updateProgressDisplay(anime);
-      } catch {
-        showSnackbar("Failed to update status");
-      }
-    });
-  });
-
-  async function changeProgress(delta: number): Promise<void> {
-    const max = anime.episodes ?? Infinity;
-    const next = Math.max(0, Math.min(max === Infinity ? 9999 : max, (currentEntry?.progress ?? 0) + delta));
-    try {
-      const entry = (await saveListEntry({
-        id: currentEntry?.id,
-        mediaId: anime.id,
-        status: currentEntry?.status ?? "PLANNING",
-        progress: next,
-      })) as AnimeDetail["mediaListEntry"];
-      if (entry) currentEntry = entry;
-      else if (currentEntry) currentEntry.progress = next;
-      else currentEntry = { id: 0, status: "PLANNING", progress: next };
-      updateProgressDisplay(anime);
-      showSnackbar(`Progress: ${next}${anime.episodes ? ` / ${anime.episodes}` : ""}`);
-    } catch {
-      showSnackbar("Failed to update progress");
-    }
-  }
-
-  document.getElementById("progress-dec")?.addEventListener("click", () => changeProgress(-1));
-  document.getElementById("progress-inc")?.addEventListener("click", () => changeProgress(1));
-
-  document.querySelectorAll("#score-group [data-score]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const score = parseInt(btn.getAttribute("data-score")!, 10);
-      try {
-        const entry = (await saveListEntry({
-          id: currentEntry?.id,
-          mediaId: anime.id,
-          status: currentEntry?.status ?? "PLANNING",
-          score,
-        })) as AnimeDetail["mediaListEntry"];
-        if (entry) currentEntry = entry;
-        showSnackbar(`Score: ${score}`);
-      } catch {
-        showSnackbar("Failed to update score");
-      }
-    });
-  });
-
-  document.getElementById("save-notes-btn")?.addEventListener("click", async () => {
-    const notes = (document.getElementById("list-notes") as HTMLTextAreaElement)?.value ?? "";
-    try {
-      const entry = (await saveListEntry({
-        id: currentEntry?.id,
-        mediaId: anime.id,
-        status: currentEntry?.status ?? "PLANNING",
-        notes,
-      })) as AnimeDetail["mediaListEntry"];
-      if (entry) currentEntry = entry;
-      showSnackbar("Notes saved");
-    } catch {
-      showSnackbar("Failed to save notes");
-    }
-  });
-
-  document.getElementById("remove-list-btn")?.addEventListener("click", async () => {
-    if (!currentEntry?.id) return;
-    try {
-      await deleteListEntry(currentEntry.id);
-      currentEntry = null;
-      showSnackbar("Removed from list");
-      if (pageContent) {
-        pageContent.innerHTML = renderAnimeDetail(anime);
-        wireListControls(anime);
-        wirePersonCards();
-      }
-    } catch {
-      showSnackbar("Failed to remove from list");
-    }
-  });
-}
-
-function updateProgressDisplay(anime: AnimeDetail): void {
-  const progress = currentEntry?.progress ?? 0;
-  const maxEps = anime.episodes ?? 0;
-  const el = document.getElementById("progress-display");
-  if (el) el.textContent = `${progress}${maxEps ? ` / ${maxEps}` : ""} episodes`;
-  const bar = document.querySelector("m3e-progress-indicator") as HTMLElement & { value?: number };
-  if (bar && maxEps) bar.setAttribute("value", String(Math.min(100, (progress / maxEps) * 100)));
-}
-
 function wirePersonCards(): void {
   const personCards = pageContent?.querySelectorAll(".person-card");
   const randomShapes = [
@@ -405,6 +198,125 @@ function wirePersonCards(): void {
         shape.setAttribute("name", "circle");
       });
     }
+  });
+}
+
+function updateEditSheetDisplay(anime: AnimeDetail): void {
+  const progress = currentEntry?.progress ?? 0;
+  const maxEps = anime.episodes ?? 0;
+  const el = document.getElementById("edit-progress-display");
+  if (el) el.textContent = `${progress}${maxEps ? ` / ${maxEps}` : ""}`;
+}
+
+function wireFabMenu(anime: AnimeDetail): void {
+  const sheet = document.getElementById("edit-sheet") as any;
+
+
+  document.getElementById("fab-next-ep")?.addEventListener("click", async () => {
+    const max = anime.episodes ?? Infinity;
+    const next = Math.max(0, Math.min(max === Infinity ? 9999 : max, (currentEntry?.progress ?? 0) + 1));
+    try {
+      const entry = (await saveListEntry({
+        id: currentEntry?.id,
+        mediaId: anime.id,
+        status: currentEntry?.status ?? "PLANNING",
+        progress: next,
+      })) as AnimeDetail["mediaListEntry"];
+      if (entry) currentEntry = entry;
+      else if (currentEntry) currentEntry.progress = next;
+      else currentEntry = { id: 0, status: "PLANNING", progress: next };
+      updateEditSheetDisplay(anime);
+      showSnackbar(`Progress: ${next}${anime.episodes ? ` / ${anime.episodes}` : ""}`);
+    } catch {
+      showSnackbar("Failed to update progress");
+    }
+  });
+
+
+  document.getElementById("fab-fav")?.addEventListener("click", async () => {
+    try {
+      isFavourite = await toggleFavourite(anime.id);
+      const icon = document.querySelector("#fav-btn m3e-icon");
+      icon?.setAttribute("name", isFavourite ? "favorite" : "favorite_border");
+      showSnackbar(isFavourite ? "Added to favourites" : "Removed from favourites");
+    } catch {
+      showSnackbar("Failed to update favourite");
+    }
+  });
+
+
+  document.getElementById("fab-edit")?.addEventListener("click", () => {
+    sheet?.show();
+  });
+
+
+  document.getElementById("edit-cancel-btn")?.addEventListener("click", () => {
+    sheet?.hide();
+  });
+
+
+  document.getElementById("edit-save-btn")?.addEventListener("click", async () => {
+    const statusGroup = document.getElementById("edit-status-group");
+    const selectedStatus = statusGroup?.querySelector("[selected]")?.getAttribute("data-status");
+
+    const scoreGroup = document.getElementById("edit-score-group");
+    const selectedScore = scoreGroup?.querySelector("[selected]")?.getAttribute("data-score");
+
+    const notes = (document.getElementById("edit-notes") as HTMLTextAreaElement)?.value ?? "";
+
+    try {
+      const entry = (await saveListEntry({
+        id: currentEntry?.id,
+        mediaId: anime.id,
+        status: selectedStatus ?? currentEntry?.status ?? "PLANNING",
+        score: selectedScore ? parseInt(selectedScore, 10) : currentEntry?.score,
+        progress: currentEntry?.progress,
+        notes,
+      })) as AnimeDetail["mediaListEntry"];
+      if (entry) currentEntry = entry;
+      showSnackbar("List entry updated");
+      sheet?.hide();
+      const statusBadges = document.querySelectorAll(".list-badge");
+      if (selectedStatus) {
+        statusBadges.forEach((b) => {
+          b.textContent = statusLabel(selectedStatus);
+        });
+      }
+    } catch {
+      showSnackbar("Failed to save changes");
+    }
+  });
+
+  document.querySelectorAll("#edit-status-group [data-status]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#edit-status-group [data-status]").forEach((b) => b.removeAttribute("selected"));
+      btn.setAttribute("selected", "");
+    });
+  });
+
+
+  document.querySelectorAll("#edit-score-group [data-score]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#edit-score-group [data-score]").forEach((b) => b.removeAttribute("selected"));
+      btn.setAttribute("selected", "");
+    });
+  });
+
+
+  document.getElementById("edit-progress-dec")?.addEventListener("click", () => {
+    const max = anime.episodes ?? Infinity;
+    const next = Math.max(0, Math.min(max === Infinity ? 9999 : max, (currentEntry?.progress ?? 0) - 1));
+    if (currentEntry) currentEntry.progress = next;
+    else currentEntry = { id: 0, status: "PLANNING", progress: next };
+    updateEditSheetDisplay(anime);
+  });
+
+  document.getElementById("edit-progress-inc")?.addEventListener("click", () => {
+    const max = anime.episodes ?? Infinity;
+    const next = Math.max(0, Math.min(max === Infinity ? 9999 : max, (currentEntry?.progress ?? 0) + 1));
+    if (currentEntry) currentEntry.progress = next;
+    else currentEntry = { id: 0, status: "PLANNING", progress: next };
+    updateEditSheetDisplay(anime);
   });
 }
 
@@ -535,8 +447,6 @@ function renderAnimeDetail(anime: AnimeDetail): string {
       </div>
 
       <div class="anime-body">
-        ${renderListControls(anime)}
-
         <div class="info-bar">
           ${epsText ? `<div class="info-item"><m3e-icon name="smart_display"></m3e-icon><span>${htmlEncode(epsText)}</span></div>` : ""}
           ${durText ? `<div class="info-item"><m3e-icon name="timer"></m3e-icon><span>${htmlEncode(durText)}</span></div>` : ""}
@@ -594,6 +504,87 @@ function renderAnimeDetail(anime: AnimeDetail): string {
           </a>
         </div>
       </div>
+
+      <!-- FAB with quick actions -->
+      <m3e-fab variant="primary" size="medium" id="anime-fab" lowered>
+        <m3e-fab-menu-trigger for="anime-fab-menu">
+          <m3e-icon name="more_vert"></m3e-icon>
+        </m3e-fab-menu-trigger>
+      </m3e-fab>
+      <m3e-fab-menu id="anime-fab-menu" variant="primary">
+
+        <m3e-fab-menu-item id="fab-next-ep">
+          <m3e-icon slot="icon" name="skip_next" filled></m3e-icon>
+          Next Episode
+        </m3e-fab-menu-item>
+        <m3e-fab-menu-item id="fab-fav">
+          <m3e-icon slot="icon" name="favorite" filled></m3e-icon>
+          Like
+        </m3e-fab-menu-item>
+        <m3e-fab-menu-item id="fab-edit">
+          <m3e-icon slot="icon" name="edit" filled></m3e-icon>
+          Edit Info
+        </m3e-fab-menu-item>
+      </m3e-fab-menu>
+
+      <!-- Bottom sheet for edit info -->
+      <m3e-bottom-sheet id="edit-sheet" modal handle detents="fit" hideable>
+        <div class="edit-sheet-content">
+          <h3 class="edit-sheet-title">Edit List Entry</h3>
+
+          <div class="edit-field">
+            <label class="edit-label">Status</label>
+            <div class="scrollable-btn-group">
+              <m3e-button-group variant="connected" id="edit-status-group">
+                ${LIST_STATUSES.map(
+                  (s) => `
+                  <m3e-button variant="tonal" toggle data-status="${s.value}" ${currentEntry?.status === s.value ? "selected" : ""}>
+                    <m3e-icon slot="icon" name="${s.icon}"></m3e-icon>
+                    ${htmlEncode(s.label)}
+                  </m3e-button>
+                `,
+                ).join("")}
+              </m3e-button-group>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label class="edit-label">Progress</label>
+            <div class="edit-progress-row">
+              <m3e-icon-button variant="tonal" id="edit-progress-dec" aria-label="Decrease progress">
+                <m3e-icon name="remove"></m3e-icon>
+              </m3e-icon-button>
+              <span class="edit-progress-text" id="edit-progress-display">${currentEntry?.progress ?? 0}${anime.episodes ? ` / ${anime.episodes}` : ""}</span>
+              <m3e-icon-button variant="tonal" id="edit-progress-inc" aria-label="Increase progress">
+                <m3e-icon name="add"></m3e-icon>
+              </m3e-icon-button>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label class="edit-label">Score</label>
+            <div class="scrollable-btn-group">
+              <m3e-button-group variant="connected" id="edit-score-group">
+                ${[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(
+                  (s) => `
+                  <m3e-button variant="tonal" toggle data-score="${s}" ${currentEntry?.score === s ? "selected" : ""}>${s}</m3e-button>
+                `,
+                ).join("")}
+              </m3e-button-group>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label class="edit-label">Notes</label>
+            <textarea id="edit-notes" class="about-textarea" rows="3" placeholder="Private notes...">${htmlEncode(currentEntry?.notes ?? "")}</textarea>
+          </div>
+
+          <div class="edit-actions">
+            <m3e-button variant="outlined" id="edit-cancel-btn">Cancel</m3e-button>
+            <m3e-button variant="filled" id="edit-save-btn">Save</m3e-button>
+          </div>
+        </div>
+      </m3e-bottom-sheet>
     </div>
   `;
 }
@@ -652,8 +643,8 @@ function renderError(msg: string): void {
 
     if (pageContent) {
       pageContent.innerHTML = renderAnimeDetail(anime);
-      wireListControls(anime);
       wirePersonCards();
+      wireFabMenu(anime);
     }
 
     const coverUrl = anime.coverImage?.extraLarge || anime.coverImage?.large || anime.coverImage?.medium;

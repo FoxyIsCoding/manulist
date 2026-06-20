@@ -58,7 +58,7 @@ function mediaCard(m: MediaItem): string {
 function renderTabs(): string {
   return `
     <div class="tab-bar">
-      <m3e-button-group variant="connected">
+      <m3e-button-group variant="connected" style="overflow-y:hidden">
         ${TABS.map(
           (t) => `
           <m3e-button variant="tonal" toggle ${currentTab === t.id ? "selected" : ""} data-tab="${t.id}">

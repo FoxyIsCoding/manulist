@@ -14,6 +14,7 @@ import "@m3e/web/button";
 import "@m3e/web/button-group";
 import "@m3e/web/skeleton";
 import "@m3e/web/icon";
+import "@m3e/web/card";
 
 interface ListEntry {
   id: number;
@@ -62,7 +63,7 @@ function listItem(entry: ListEntry): string {
 function renderStatusTabs(): string {
   return `
     <div class="tab-bar scrollable">
-      <m3e-button-group variant="connected">
+      <m3e-button-group variant="connected" style="overflow-y:hidden">
         <m3e-button variant="tonal" toggle ${!currentStatus ? "selected" : ""} data-status="">All</m3e-button>
         ${LIST_STATUSES.map(
           (s) => `
@@ -102,15 +103,20 @@ async function loadLibrary(): Promise<void> {
     if (res.status === 401) {
       pageContent.innerHTML = `
         <div class="page-container profile-login">
-          <m3e-heading level="2">Your Library</m3e-heading>
-          <p>Sign in with AniList to view and manage your anime list.</p>
-          <m3e-button variant="filled" id="library-login">
-            <m3e-icon slot="icon" name="login"></m3e-icon>
-            Login with AniList
-          </m3e-button>
+          <m3e-card>
+            <div class="card-content profile-login-content">
+              <m3e-icon name="account_circle" style="font-size:4rem"></m3e-icon>
+              <m3e-heading level="2">Sign in with AniList</m3e-heading>
+              <p>Connect your AniList account to manage your lists, track progress, and sync your library.</p>
+              <m3e-button variant="filled" id="login-btn">
+                      <m3e-icon slot="icon" name="login"></m3e-icon>
+                      Login with AniList
+                    </m3e-button> 
+            </div>
+          </m3e-card>
         </div>
       `;
-      document.getElementById("library-login")?.addEventListener("click", () => {
+      document.getElementById("login-btn")?.addEventListener("click", () => {
         window.location.href = loginUrl();
       });
       return;

@@ -1,0 +1,335 @@
+- generic [ref=e2]:
+  - generic:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - button "Menu" [ref=e6] [cursor=pointer]:
+          - img [ref=e10]:
+            - generic [ref=e11]: menu
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - generic: M3E — Material 3 Expressive for Every Framework
+          - generic [ref=e15]:
+            - generic: v2.5.12
+        - generic [ref=e17]:
+          - link "Git" [ref=e18] [cursor=pointer]:
+            - /url: https://github.com/matraic/m3e
+            - generic [ref=e19]:
+              - link [ref=e21]:
+                - /url: https://github.com/matraic/m3e
+              - img [ref=e23]
+          - button "Settings" [ref=e25] [cursor=pointer]:
+            - img [ref=e29]:
+              - generic [ref=e30]: settings
+    - generic [ref=e31]:
+      - main [ref=e33]:
+        - iframe [ref=e34]:
+          - generic:
+            - generic: List
+            - generic: Usage
+            - generic: Lists
+            - generic: Anatomy
+            - generic:
+              - generic:
+                - generic: Headline
+            - generic: Variants
+            - generic:
+              - generic:
+                - generic: Item 1
+                - generic: Item 2
+                - generic: Item 3
+            - generic:
+              - generic:
+                - generic: Item 1
+                - generic: Item 2
+                - generic: Item 3
+            - generic: Multiline items
+            - generic:
+              - generic:
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+            - generic: Media content
+            - generic:
+              - generic:
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+            - generic:
+              - generic:
+                - generic:
+                  - generic: AB
+                - generic: Label text
+                - generic:
+                  - generic: AB
+                - generic: Label text
+                - generic:
+                  - generic: AB
+                - generic: Label text
+                - generic: Label text
+            - generic:
+              - generic:
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+            - generic:
+              - generic:
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+                - generic: Label text
+            - generic: Dividers
+            - generic:
+              - generic:
+                - generic: Item 1
+                - generic: Item 2
+                - generic: Item 3
+            - generic:
+              - generic:
+                - generic: Item 1
+                - generic: Item 2
+                - generic: Item 3
+            - generic: Action lists
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Action 1
+                - generic:
+                  - generic: Action 2
+                - generic:
+                  - generic: Action 3
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Action 1
+                - generic:
+                  - generic: Action 2
+                - generic:
+                  - generic: Action 3
+            - generic: Disabling
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Disabled action 1
+                - generic:
+                  - generic: Action 2
+                - generic:
+                  - generic: Action 3
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Disabled action 1
+                - generic:
+                  - generic: Action 2
+                - generic:
+                  - generic: Action 3
+            - generic: Links
+            - generic:
+              - generic:
+                - generic:
+                  - generic: Google
+            - generic: Nested lists
+            - generic:
+              - generic:
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+            - generic:
+              - generic:
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                - generic:
+                  - generic: List item
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+                    - generic:
+                      - generic: List item
+            - generic: Selection lists
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic: Multiple selection
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic: Hiding the selection indicator
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic: Disabling
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic: Form Associated
+            - generic: Density
+            - generic:
+              - generic:
+                - generic: Option 1
+                - generic: Option 2
+                - generic: Option 3
+            - generic: Accessibility
+            - generic: Native module support
+            - generic: API
+            - generic: m3e-list
+            - generic:
+              - generic: Properties
+              - generic: Slots
+              - generic: CSS Custom Properties
+            - generic: m3e-list-item
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: CSS Custom Properties
+            - generic: m3e-action-list
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: CSS Custom Properties
+            - generic: m3e-list-action
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: Events
+              - generic: CSS Custom Properties
+            - generic: m3e-selection-list
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: Events
+              - generic: CSS Custom Properties
+            - generic: m3e-list-option
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: Events
+              - generic: CSS Custom Properties
+            - generic: m3e-expandable-list-item
+            - generic:
+              - generic: Properties
+              - generic: Methods
+              - generic: Slots
+              - generic: Events
+              - generic: CSS Custom Properties
+          - generic: Usage
+          - generic: Lists
+          - generic: Anatomy
+          - generic: Variants
+          - generic: Multiline items
+          - generic: Media content
+          - generic: Dividers
+          - generic: Action lists
+          - generic: Disabling
+          - generic: Links
+          - generic: Nested lists
+          - generic: Selection lists
+          - generic: Multiple selection
+          - generic: Hiding the selection indicator
+          - generic: Disabling
+          - generic: Form Associated
+          - generic: Density
+          - generic: Accessibility
+          - generic: Native module support
+          - generic: API
+          - generic: m3e-list
+          - generic: m3e-list-item
+          - generic: m3e-action-list
+          - generic: m3e-list-action
+          - generic: m3e-selection-list
+          - generic: m3e-list-option
+          - generic: m3e-expandable-list-item
+      - generic:
+        - generic:
+          - generic:
+            - generic: Color
+            - generic: Color scheme
+            - generic:
+              - generic: Light
+              - generic: System
+              - generic: Dark
+            - generic: Contrast
+            - generic:
+              - generic: Default
+              - generic: Medium
+              - generic: High
+            - generic: Directionality
+            - generic:
+              - generic: Left to right
+              - generic: Right to left

@@ -67,7 +67,7 @@ function activityCard(a: ActivityItem): string {
     <m3e-card class="activity-card">
       <div class="activity-row">
         <a href="/profile?name=${encodeURIComponent(user?.name ?? "")}" class="activity-avatar-link">
-          <m3e-avatar src="${escapeAttr(avatar)}" alt="${htmlEncode(user?.name ?? "")}"></m3e-avatar>
+          <m3e-avatar><img src="${escapeAttr(avatar)}" alt="${htmlEncode(user?.name ?? "")}"></img></m3e-avatar>
         </a>
         <div class="activity-body">
           <p>${htmlEncode(text)}</p>
